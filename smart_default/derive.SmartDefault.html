@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `SmartDefault` derive in crate `smart_default`."><meta name="keywords" content="rust, rustlang, rust-lang, SmartDefault"><title>smart_default::SmartDefault - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="shortcut icon" href="../favicon.ico"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc derive"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../smart_default/index.html'><div class='logo-container'><img src='../rust-logo.png' alt='logo'></div></a><div class="sidebar-elems"><p class='location'><a href='index.html'>smart_default</a></p><script>window.sidebarCurrent = {name: 'SmartDefault', ty: 'derive', relpath: ''};</script><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/smart_default/lib.rs.html#74-84' title='goto source code'>[src]</a></span><span class='in-band'>Derive Macro <a href='index.html'>smart_default</a>::<wbr><a class="derive" href=''>SmartDefault</a></span></h1><pre class='rust derive'>#[derive(SmartDefault)]
+{
+    // Attributes available to this derive:
+    #[default]
+}</pre><div class='docblock'><h1 id="smart-default" class="section-header"><a href="#smart-default">Smart Default</a></h1>
+<p>This crate provides a custom derive for <code>SmartDefault</code>. <code>SmartDefault</code> is not a real type -
+deriving it will actually <code>impl Default</code>. The difference from regular <code>#[derive(Default)]</code> is
+that <code>#[derive(SmartDefault)]</code> allows you to use <code>#[default = &quot;...&quot;]</code> attributes to customize
+the <code>::default()</code> method and to support <code>struct</code>s that don't have <code>Default</code> for all their
+fields - and even <code>enum</code>s!</p>
+<h1 id="examples" class="section-header"><a href="#examples">Examples</a></h1>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="attribute">#[<span class="ident">macro_use</span>]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">smart_default</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">SmartDefault</span>)]</span>
+<span class="kw">enum</span> <span class="ident">Foo</span> {
+    <span class="ident">Bar</span>,
+    <span class="attribute">#[<span class="ident">default</span>]</span>
+    <span class="ident">Baz</span> {
+        <span class="attribute">#[<span class="ident">default</span> <span class="op">=</span> <span class="number">12</span>]</span>
+        <span class="ident">a</span>: <span class="ident">i32</span>,
+        <span class="ident">b</span>: <span class="ident">i32</span>,
+        <span class="attribute">#[<span class="ident">default</span>(<span class="prelude-val">Some</span>(<span class="ident">Default</span>::<span class="ident">default</span>()))]</span>
+        <span class="ident">c</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
+        <span class="attribute">#[<span class="ident">default</span>(<span class="ident">_code</span> <span class="op">=</span> <span class="string">&quot;vec![1, 2, 3]&quot;</span>)]</span>
+        <span class="ident">d</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
+        <span class="attribute">#[<span class="ident">default</span> <span class="op">=</span> <span class="string">&quot;four&quot;</span>]</span>
+        <span class="ident">e</span>: <span class="ident">String</span>,
+    },
+    <span class="ident">Qux</span>(<span class="ident">i32</span>),
+}
+
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">Foo</span>::<span class="ident">default</span>() <span class="op">=</span><span class="op">=</span> <span class="ident">Foo</span>::<span class="ident">Baz</span> {
+    <span class="ident">a</span>: <span class="number">12</span>,
+    <span class="ident">b</span>: <span class="number">0</span>,
+    <span class="ident">c</span>: <span class="prelude-val">Some</span>(<span class="number">0</span>),
+    <span class="ident">d</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],
+    <span class="ident">e</span>: <span class="string">&quot;four&quot;</span>.<span class="ident">to_owned</span>(),
+});</pre></div>
+<ul>
+<li><code>Baz</code> has the <code>#[default]</code> attribute. This means that the default <code>Foo</code> is a <code>Foo::Baz</code>. Only
+one variant may have a <code>#[default]</code> attribute, and that attribute must have no value.</li>
+<li><code>a</code> has a <code>#[default = 12]</code> attribute. This means that it's default value is <code>12</code>.</li>
+<li><code>b</code> has no <code>#[default = ...]</code> attribute. It's default value will <code>i32</code>'s default value
+instead - <code>0</code>.</li>
+<li><code>c</code> is an <code>Option&lt;i32&gt;</code>, and it's default is <code>Some(Default::default())</code>. Rust cannot (currently)
+parse <code>#[default = Some(Default::default())]</code> and therefore we have to use a special syntax:
+<code>#[default(Some(Default::default))]</code></li>
+<li><code>d</code> has the <code>!</code> token in it, which cannot (currently) be parsed even with <code>#[default(...)]</code>,
+so we have to encode it as a string and mark it as <code>_code = </code>.</li>
+<li><code>e</code> is a <code>String</code>, so the string literal &quot;four&quot; is automatically converted to it. This
+automatic conversion <strong>only</strong> happens to string (or byte string) literals - and only if
+<code>_code</code> is not used.</li>
+<li>Documentation for the <code>impl Default</code> section is generated automatically, specifying the
+default value returned from <code>::default()</code>.</li>
+</ul>
+</div></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../";window.currentCrate = "smart_default";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>
